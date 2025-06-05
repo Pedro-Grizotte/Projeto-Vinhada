@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 100" width="450" height="100">
+  <style>
+    .logo-text {
+      font-family: cursive; 
+      font-size: 48px;
+      fill: #DAA520; /* Muted Gold */
+      dominant-baseline: middle;
+      text-anchor: start; /* Align text to start */
+    }
+    .wine-glass path {
+      stroke: #DAA520; /* Muted Gold */
+      stroke-width: 2;
+      fill: none;
+    }
+  </style>
+  
+  <!-- Text -->
+  <text x="10" y="50" class="logo-text">Sociedade do Vinho</text>
+  
+  <!-- Stylized Wine Glass Icon (Simplified) -->
+  <g class="wine-glass" transform="translate(390, 25) scale(0.8)">
+     <!-- Bowl -->
+    <path d="M 5 15 C 5 35, 45 35, 45 15" /> 
+    <!-- Stem -->
+    <path d="M 25 35 L 25 55" /> 
+    <!-- Base -->
+    <path d="M 10 55 L 40 55" /> 
+     <!-- Wine -->
+    <path d="M 10 25 Q 25 35 40 25" />
+  </g>
+</svg>
