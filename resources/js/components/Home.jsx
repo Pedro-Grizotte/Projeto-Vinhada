@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+import FormRegister from './FormRegister';
+
 function Home() {
     return (
         <div className="bg-rose-900">
@@ -24,8 +26,9 @@ function Home() {
                             marcar presença, e deixar deixar com que imprevistos não atrapalhem.
                         </p>
                     </div>
+                    <FormRegister />
                     <div className="mt-10 flex items-center justify-center gap-x-6">
-                        <a href="#" className="rounded-md bg-gray-100 px-3.5 py-2.5 text-sm font-semibold text-black shadow-xs hover:bg-rose-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        <a href="#" onClick={() => document.getElementById('form-register').style.display = ''} className="rounded-md bg-rose-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-rose-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                             Sign Up
                         </a>
                         <a href="#" className="text-sm/6 font-semibold text-white">
@@ -65,6 +68,7 @@ function Home() {
                     </figure>
                 </div>
             </section>
+            <script src='../scripts/Forms.js'></script>
         </div>
     );
 }
