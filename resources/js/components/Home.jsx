@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import FormRegister from './FormRegister';
+import FormUser from './FormUser';
 
 function Home() {
+    const [showForm, setShowForm] = useState(false);
+
     return (
         <div className="bg-rose-900">
             <div className="mx-auto max-w-7xl py-24 sm:px-6 sm:py-32 lg:px-8">
@@ -26,10 +28,12 @@ function Home() {
                             marcar presença, e deixar deixar com que imprevistos não atrapalhem.
                         </p>
                     </div>
-                    <FormRegister />
+                    {/* Formulário de Log In */}
+                    {showForm && <FormUser onClose={() => setShowForm(false)} />}
+
                     <div className="mt-10 flex items-center justify-center gap-x-6">
-                        <a href="#" onClick={() => document.getElementById('form-register').style.display = ''} className="rounded-md bg-rose-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-rose-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            Sign Up
+                        <a href="#" onClick={() => setShowForm(true)} className="rounded-md bg-rose-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-rose-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            Sign In
                         </a>
                         <a href="#" className="text-sm/6 font-semibold text-white">
                             Learn more <span aria-hidden="true">→</span>
