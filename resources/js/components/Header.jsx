@@ -41,11 +41,12 @@ export default function Header() {
     
     return (
         <header className="bg-black">
-            <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
-                <div className="flex lg:flex-1">
+            <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8">
+                <div className="flex items-center justify-center lg:flex-1">
                     <a href="#" className="-m-1.5 p-1.5">
                         <span className="sr-only">Projeto Vinhada</span>
-                        <img alt="" src="https://www.svgrepo.com/show/7801/wine-glass.svg" className="h-8 w-auto"/>
+                        <img src="/logo.svg" className="h-10 w-auto float-right pl-6"/>
+                        <img alt="" src="https://www.svgrepo.com/show/7801/wine-glass.svg" className="float-left h-8 w-auto"/>
                     </a>
                 </div>
                 <div className="flex lg:hidden">
