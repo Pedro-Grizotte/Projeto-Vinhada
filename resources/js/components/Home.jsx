@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import FormUser from './FormUser';
+import OurTeam from './OurTeam';
 
 function Home() {
     const [showForm, setShowForm] = useState(false);
@@ -35,7 +36,7 @@ function Home() {
                         <a href="#" onClick={() => setShowForm(true)} className="rounded-md bg-rose-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-rose-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                             Sign In
                         </a>
-                        <a href="#" className="text-sm/6 font-semibold text-white">
+                        <a href="#" className="text-sm/6 font-semibold text-white hover:text-indigo-500">
                             Learn more <span aria-hidden="true">→</span>
                         </a>
                     </div>
@@ -72,6 +73,10 @@ function Home() {
                     </figure>
                 </div>
             </section>
+
+            {/* Nosso time */}
+            <OurTeam />
+
             <script src='../scripts/Forms.js'></script>
         </div>
     );

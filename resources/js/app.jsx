@@ -1,8 +1,8 @@
 import './bootstrap';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import '../css/app.css';
 
-import MainApp from './components/MainApp';
 import Header from './components/Header';
 import Home from './components/Home';
 import Footer from './components/Footer';
@@ -13,8 +13,9 @@ if (rootElement) {
     root.render(
         <React.StrictMode>
             <Header />
-            <Home />
+                <Home />
             <Footer />
-        </React.StrictMode>
+        </React.StrictMode>,
+        document.getElementById('root')
     );
 }
