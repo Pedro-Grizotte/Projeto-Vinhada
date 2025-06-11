@@ -79,17 +79,6 @@ return [
     | set to any locale for which you plan to have translation strings.
     |
     */
-    'providers' => ServiceProvider::defaultProviders()->merge([
-        /*
-        * Pacakge Service Providers...
-        */ 
-
-        /*
-        * Aplication Service Providers...
-        */ 
-        App\Providers\RouteServiceProvider::class,
-    ])->toArray(),
-
     'locale' => env('APP_LOCALE', 'en'),
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
@@ -113,7 +102,8 @@ return [
 
     'previous_keys' => [
         ...array_filter(
-            explode(',', env('APP_PREVIOUS_KEYS', ''))
+            explode(',', env('APP_PREVIOUS_KEYS', '')),
+            fn($key) => !empty($key)
         ),
     ],
 
@@ -134,4 +124,35 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Autoloaded Service Providers
+    |--------------------------------------------------------------------------
+    |
+    | The service providers listed here will be automatically loaded on the
+    | request to your application. Feel free to add your own services to
+    | this array to grant expanded functionality to your applications.
+    |
+    */
+    'providers' => ServiceProvider::defaultProviders()->merge([
+        /*
+        * Pacakge Service Providers...
+        */ 
+
+        /*
+        * Aplication Service Providers...
+        */ 
+    ])->toArray(),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Class Aliases
+    |--------------------------------------------------------------------------
+    |
+    | This array of class aliases will be registered when this application
+    | is started. However, feel free to register as many as you wish as
+    | the aliases are "lazy" loaded so they don\'t hinder performance.
+    |
+    */
 ];

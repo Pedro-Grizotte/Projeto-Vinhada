@@ -1,8 +1,69 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import authService from '../services/authService';
 
 function FormUser({ onClose }) {
     const [showLogin, setShowLogin] = useState(true);
+    const [name, setName] = useState("");
+    const [cpf, setCpf] = useState("");
+    const [phone, setPhone] = useState("");
+    const [email, setEmail] = useState("");
+    const [birthDate, setBirthDate] = useState("");
+    const [password, setPassword] = useState("");
+    const [passwordConfirmation, setPasswordConfirmation] = useState("");
+
+    const [error, setError] = useState(null); 
+
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        setError(null);
+
+        try {
+            const data = await authService.register(
+                name, 
+                cpf,
+                phone,
+                email, 
+                birthDate,
+                password, 
+                passwordConfirmation
+            );
+            console.log("Registro bem-sucedido:", data);
+            setShowLogin(true); // Volta para a tela de login após o registro
+            alert("Usuário registrado com sucesso! Faça login.");
+        } catch (err) {
+            console.error("Erro no registro:", err.response ? err.response.data : err.message);
+            if (err.response && err.response.data && err.response.data.errors) {
+                setError(Object.values(err.response.data.errors).flat().join("\n"));
+            } else if (err.response && err.response.data && err.response.data.message) {
+                setError(err.response.data.message);
+            } else {
+                setError("Ocorreu um erro inesperado durante o registro.");
+            }
+        }
+    };
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setError(null);
+
+        try {
+            const data = await authService.login(email, password);
+            console.log("Login bem-sucedido:", data);
+            alert("Login realizado com sucesso!");
+            onClose(); // Fecha o formulário após o login
+            // Redirecionar para o dashboard ou outra página
+            // window.location.href = "; // Exemplo de redirecionamento
+        } catch (err) {
+            console.error("Erro no login:", err.response ? err.response.data : err.message);
+            if (err.response && err.response.data && err.response.data.errors) {
+                setError(Object.values(err.response.data.errors).flat().join("\n"));
+            } else if (err.response && err.response.data && err.response.data.message) {
+                setError(err.response.data.message);
+            } else {
+                setError("Ocorreu um erro inesperado durante o login.");
+            }
+        } 
+    };
 
     return (
         <>
@@ -13,8 +74,10 @@ function FormUser({ onClose }) {
                     </svg>
                 </div>
 
+                {error && <div className='text-red-500 text-center mb-4'>{error}</div>}
+
                 {/* Formulário de Login */}
-                {showLogin && (
+                {showLogin ? (
                     <div id='formLogin' class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
                         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
                             <img class="mx-auto h-10 w-auto" src="https://www.svgrepo.com/show/7801/wine-glass.svg" alt="Your Company" />
@@ -22,11 +85,11 @@ function FormUser({ onClose }) {
                         </div>
 
                         <div class="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
-                            <form class="space-y-6" action="#" method="POST">
+                            <form className="space-y-6" onSubmit={handleLogin}>
                                 <div>
                                     <label for="email" class="block text-sm/6 font-medium text-white">Email address</label>
                                     <div class="mt-2">
-                                    <input type="email" name="email" id="email" autocomplete="email" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                                        <input type="email" name="email" id="email" autocomplete="email" required value={email} onChange={(e ) => setEmail(e.target.value)} className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
                                     </div>
                                 </div>
 
@@ -38,7 +101,7 @@ function FormUser({ onClose }) {
                                     </div>
                                     </div>
                                     <div class="mt-2">
-                                    <input type="password" name="password" id="password" autocomplete="current-password" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                                        <input type="password" name="password" id="password" autocomplete="current-password" required value={password} onChange={(e ) => setPassword(e.target.value)} class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
                                     </div>
                                 </div>
 
@@ -54,47 +117,44 @@ function FormUser({ onClose }) {
                             </p>
                         </div>
                     </div>
-                )}
-
-                {/* Formulário de Registro */}
-                {!showLogin && (
+                ) : (
                     <div id='formRegister' class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
                         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
                             <img class="mx-auto h-10 w-auto" src="https://www.svgrepo.com/show/7801/wine-glass.svg" alt="Your Company" />
                             <h2 class="mt-8 text-center text-2xl/9 font-bold tracking-tight text-white">Create your account</h2>
                         </div>
                         <div class="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
-                            <form class="space-y-6" action="#" method="POST">
+                            <form class="space-y-6" onSubmit={handleRegister}>
                                 <div>
                                     <label for="name" class="block text-sm/6 font-medium text-white">Full name</label>
                                     <div class="mt-2">
-                                        <input type="text" name="name" id="name" placeholder='insira seu nome...' autocomplete="name" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                                        <input type="text" name="name" id="name" placeholder='insira seu nome...' autocomplete="name" required value={name} onChange={(e ) => setName(e.target.value)} class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
                                     </div>
                                 </div>
                                 <div className='grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2'> 
                                     <div>
                                         <label for="cpf" class="block text-sm/6 font-medium text-white">CPF</label>
                                         <div class="mt-2">
-                                            <input type="text" name="cpf" id="cpf" placeholder='insira seu CPF...' autocomplete="cpf" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                                            <input type="text" name="cpf" id="cpf" placeholder='insira seu CPF...' autocomplete="cpf" required value={cpf} onChange={(e) => setCpf(e.target.value)} class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
                                         </div>
                                     </div>
                                     <div>
                                         <label for="phone" class="block text-sm/6 font-medium text-white">Phone number</label>
                                         <div class="mt-2">
-                                            <input type="tel" name="phone" id="phone" placeholder='insira seu telefone...' autocomplete="tel" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                                            <input type="tel" name="phone" id="phone" placeholder='insira seu telefone...' autocomplete="tel" required value={phone} onChange={(e) => setPhone(e.target.value)} class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
                                         </div>
                                     </div>
                                 </div>
                                 <div>
                                     <label for="email" class="block text-sm/6 font-medium text-white">Email address</label>
                                     <div class="mt-2">
-                                    <input type="email" name="email" id="email" placeholder='insira seu e-mail...' autocomplete="email" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                                        <input type="email" name="email" id="email" placeholder='insira seu e-mail...' autocomplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
                                     </div>
                                 </div>
                                 <div>
                                     <label for="date" class="block text-sm/6 font-medium text-white">Date of Birth</label>
                                     <div class="mt-2">
-                                        <input type="date" name="date" id="date" placeholder='insira sua data de nascimento...' required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                                        <input type="date" name="date" id="date" placeholder='insira sua data de nascimento...' required value={birthDate} onChange={(e) => setBirthDate(e.target.value)} class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
                                     </div>
                                 </div>
                                 <div>
@@ -102,15 +162,15 @@ function FormUser({ onClose }) {
                                     <label for="password" class="block text-sm/6 font-medium text-white">Password</label>
                                     </div>
                                     <div class="mt-2">
-                                    <input type="password" name="password" id="password" placeholder='insira sua senha...' autocomplete="current-password" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                                        <input type="password" name="password" id="password" placeholder='insira sua senha...' autocomplete="new-password" required value={password} onChange={(e) => setPassword(e.target.value)} class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
                                     </div>
                                 </div>
                                 <div>
                                     <div class="flex items-center justify-between">
-                                    <label for="password" class="block text-sm/6 font-medium text-white">Confirm Password</label>
+                                    <label for="password_confirmation" class="block text-sm/6 font-medium text-white">Confirm Password</label>
                                     </div>
                                     <div class="mt-2">
-                                    <input type="password" name="password" id="password" placeholder='confirme sua senha...' autocomplete="current-password" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                                        <input type="password" name="password_confirmation" id="password_confirmation" placeholder='confirme sua senha...' autocomplete="new-password" required value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
                                     </div>
                                 </div>
                                 <div>
